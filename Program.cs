@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Platform;
@@ -121,8 +122,20 @@ app.UseEndpoints(endpoints => {
             await context.Response
                 .WriteAsync($"{kvp.Key}: {kvp.Value}\n");}
     }); */
+    // TODO
+    // 1. создать класс новой конечной точки на одну из тем:
+    // - узнать название государственного языка
+    // - узнать название государства по площади (указывать целую составляющую в км^2),
+    // тогда при попадании на площать Антарктиды возвращать строку "Антарктида",
+    // а при попадании на площадь Монако -
+    // выполнять перенаправление на уже существующую конечную точку с шаблоном адреса capital/{country},
+    // передавая через анонимный объект значение country = "monaco"
+    // 2. перенаправление на capital/{country} для площади Монако
+    // должно происходить даже тогда, когда в исходном коде проекта шаблон конечной точки capital/{country} изменится
+    // на c/{country}
     endpoints.MapGet("capital/{country}", Capital.Endpoint);
-    endpoints.MapGet("population/{city}", Population.Endpoint);
+    endpoints.MapGet("size/{city}", Population.Endpoint)
+        .WithMetadata(new RouteNameMetadata("population"));
 });
 
 app.Run(async context => {
