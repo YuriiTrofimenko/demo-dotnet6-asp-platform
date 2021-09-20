@@ -30,6 +30,7 @@ namespace Platform.Middlewares {
                 {
                     await context.Response.WriteAsync($"{ex.Message} \n");
                 } */
+                context.Response.StatusCode = StatusCodes.Status200OK;
             }
             await next(context);
         }

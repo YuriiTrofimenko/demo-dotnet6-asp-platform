@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Platform;
 using Platform.Middlewares;
 using Platform.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // builder.Services.Configure<MessageOptions>(options => {});
-builder.Services.Configure<MessageOptions>(options =>
+/* builder.Services.Configure<MessageOptions>(options =>
 {
     options.CityName= "Odessa";
-});
+}); */
 
 
 var app = builder.Build();
@@ -22,11 +23,11 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseMiddleware<LocationMiddleware>();
+/* app.UseMiddleware<LocationMiddleware>();
 
 app.Map(pathMatch:"/branch", configuration:branch => {
     branch.Run(new QueryStringMiddleWare().Invoke);
-});
+}); */
 
 /* app.Map(
     pathMatch:"/branch", configuration: branch => {
@@ -99,8 +100,14 @@ app.MapWhen(context =>
 // app.UseMiddleware<QueryStringMiddleWare>();
 // app.UseMiddleware<CheckImagePathMiddleWare>();
 
-app.MapGet("/", () => "Hello ASP.NET!\n");
+// app.MapGet("/", () => "Hello ASP.NET!\n");
 
 // app.Use(async (context, next) => await next());
 
+app.UseMiddleware<Population>();
+app.UseMiddleware<Capital>();
+app.Run(async context => {
+    await context.Response.WriteAsync("Terminal Middleware Reached");
+});
 app.Run();
+
